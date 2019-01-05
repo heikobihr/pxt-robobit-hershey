@@ -5,8 +5,7 @@
     "dependencies": {
         "core": "*",
         "radio": "*",
-        "RoboBit": "github:4tronix/robobit#v1.2.2",
-        "pxt-robobit-hershey": "workspace:8ca47c3d-0550-476b-3843-9d8d45bb851a"
+        "RoboBit": "github:4tronix/robobit#v1.2.2"
     },
     "files": [
         "README.md",
