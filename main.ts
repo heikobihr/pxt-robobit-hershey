@@ -4,8 +4,9 @@ namespace robobithershey {
     let x = 0;
     // current y position
     let y = 0;
-    // current orientation
-    let orientation = 0;
+
+    // current direction
+    let direction = 0;
 
     // scale factor
     let scale = 5;
@@ -94,6 +95,55 @@ namespace robobithershey {
         return glyph;
     }
 
+    //      ^ y
+    //      |  
+    //   Q4 | Q1
+    // -----+------> x   (x,y) = (0,0) = origin
+    //   Q3 | Q2
+    //      |
+    function plotTo(nx: number, ny: number) {
+        let c = Math.sqrt((nx * nx) + (ny * ny));
+
+        // alpha = angle from positive x axis
+        let alpha = Math.atan(Math.tan(Math.abs(ny) / Math.abs(nx)));
+
+        let newDirection = 0;
+
+        if (nx >= 0) {
+            if (ny >= 0) {
+                // target vertex in Q1
+                newDirection = alpha;
+            } else {
+                // target vertex in Q2
+                newDirection = 360 - alpha
+            }
+        } else {
+            if (ny >= 0) {
+                // target vertex in Q4
+                newDirection = 180 - alpha;
+            } else {
+                // target vertex in Q3
+                newDirection = 180 + alpha;
+            }
+        }
+
+        // turn
+        let rot = direction - newDirection;
+        if (Math.abs(rot) > 180) {
+            rot = -1 * (360 - rot);
+        }
+
+        if (rot > 0) {
+            // rotate counter clockwise
+        } else if (rot < 0) {
+            // rotate clockwise
+        }
+
+        // drive c
+
+        return newDirection;
+    }
+
     //% block
     export function plotChar(char: string) {
         let i: number = char.charCodeAt(0);
@@ -106,6 +156,20 @@ namespace robobithershey {
         }
 
         let glyph: Glyph = decodeGlyph(i);
+
+        let x: number = 0;
+        let y: number = 0;
+
+        for (let vertex of glyph.vertices) {
+            let nx: number = vertex.x - x;
+            let ny: number = vertex.y - y;
+
+            direction = plotTo(nx, ny);
+            x += nx;
+            y += ny;
+        }
+
+        direction = plotTo(glyph.right - glyph.left, 0);
     }
 
 }
