@@ -9,7 +9,8 @@ namespace robobithershey {
     let direction = 0;
 
     // scale factor
-    let scale = 5;
+    let scale_x = 5;
+    let scale_y = 5;
 
     class Vertex {
         public x: number;
@@ -163,31 +164,33 @@ namespace robobithershey {
     }
 
     //% block
-    export function plotChar(char: string) {
-        let i: number = char.charCodeAt(0);
+    export function plotText(text: string) {
+        for (let i = 0; i < text.length; i++) {
+            let gi = char.charCodeAt(i);
 
-        if (i == 32 /* ascii blank */) {
-            // glyph index of "blank"
-            i = 26;
-        } else {
-            i -= 97 /* ascii a */;
+            if (gi == 32 /* ascii blank */) {
+                // glyph index of "blank"
+                gi = 26;
+            } else {
+                gi -= 97 /* ascii a */;
+            }
+
+            let glyph: Glyph = decodeGlyph(gi);
+
+            let x: number = 0;
+            let y: number = 0;
+
+            for (let vertex of glyph.vertices) {
+                let nx: number = ((vertex.x - glyph.left) * scale_x) - x;
+                let ny: number = (vertex.y * scale_y) - y;
+
+                direction = plotTo(nx, ny);
+                x += nx;
+                y += ny;
+            }
+
+            direction = plotTo(((glyph.right - glyph.left) * scale_x) - x, 0);
         }
-
-        let glyph: Glyph = decodeGlyph(i);
-
-        let x: number = 0;
-        let y: number = 0;
-
-        for (let vertex of glyph.vertices) {
-            let nx: number = (vertex.x - glyph.left) - x;
-            let ny: number = vertex.y - y;
-
-            direction = plotTo(nx, ny);
-            x += nx;
-            y += ny;
-        }
-
-        direction = plotTo(glyph.right - glyph.left - x, 0);
     }
 
 }
