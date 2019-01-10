@@ -1,10 +1,5 @@
 namespace robobithershey {
 
-    // current x position
-    let x = 0;
-    // current y position
-    let y = 0;
-
     // current direction
     let direction = 0;
 
