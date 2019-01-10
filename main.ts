@@ -105,7 +105,11 @@ namespace robobithershey {
         let c = Math.sqrt((nx * nx) + (ny * ny));
 
         // alpha = angle from positive x axis
-        let alpha = Math.atan(Math.tan(Math.abs(ny) / Math.abs(nx)));
+        let alpha = 90;
+        if (nx != 0) {
+            alpha = (Math.atan(ny / nx) * 180) / Math.PI;
+        }
+
 
         let newDirection = 0;
 
@@ -127,12 +131,26 @@ namespace robobithershey {
             }
         }
 
-        // turn
-        let rot = direction - newDirection;
-        if (Math.abs(rot) > 180) {
-            rot = -1 * (360 - rot);
+        // compute angle to rotate
+        rot = newDirection - direction
+
+        if (rot >= 360) {
+            rot -= 360;
         }
 
+        if (rot <= -360) {
+            rot += 360;
+        }
+
+        // do not turn more than 180 degrees (just turn to opposite direction)
+        if (rot > 180) {
+            rot = -1 * (360 - rot);
+        }
+        if (rot < -180) {
+            rot = rot + 360;
+        }
+
+        // perform turn operation
         if (rot > 0) {
             // rotate counter clockwise
         } else if (rot < 0) {
@@ -161,7 +179,7 @@ namespace robobithershey {
         let y: number = 0;
 
         for (let vertex of glyph.vertices) {
-            let nx: number = vertex.x - x;
+            let nx: number = (vertex.x - glyph.left) - x;
             let ny: number = vertex.y - y;
 
             direction = plotTo(nx, ny);
@@ -169,7 +187,7 @@ namespace robobithershey {
             y += ny;
         }
 
-        direction = plotTo(glyph.right - glyph.left, 0);
+        direction = plotTo(glyph.right - glyph.left - x, 0);
     }
 
 }
