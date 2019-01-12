@@ -98,12 +98,44 @@ namespace robobithershey {
     //   Q3 | Q2
     //      |
     function plotTo(nx: number, ny: number) {
+        // translate relative coordinates nx, ny to an
+        // angle to turn and length of way to move
+        //
+        // (0,0) is origin of our coordinate system. Depending on
+        // nx's and ny's sign, build a right triangle in one of the
+        // four quadrants (Q1..Q4) of our coordinate system with
+        // a=ny and b=nx. To move robobit from (0,0) to (nx,ny),
+        // we need to turn it by alpha and move the length of c.
+        //
+        // robobit mal already look in a different direction than
+        // positive x axis (0 degree), so we have to subtract
+        // robobits current angle from alpha
+        //
+        //           ^ y
+        // Q4        |        Q1 
+        //      B    |    B 
+        //      |\   |   /|
+        //      | \  | c/ |a=ny   b=nx
+        //      |  \ | /  |
+        //      |   \|/)alpha
+        // -----C----A--b-C------> x   (x,y) = (0,0) = origin
+        //      |   /|\   |
+        //      |  / | \  |
+        //      | /  |  \ |
+        //      |/   |   \|
+        //      B    |    B
+        // Q3        |        Q2
+        //
+        //
+        // Trigonometry and pythagoras are only computed for Q1
+        // New direction is then computed from alpha.
+
         let c = Math.sqrt((nx * nx) + (ny * ny));
 
         // alpha = angle from positive x axis
         let alpha = 90;
         if (nx != 0) {
-            alpha = (Math.atan(ny / nx) * 180) / Math.PI;
+            alpha = (Math.atan(Math.abs(ny) / Math.abs(nx) * 180) / Math.PI;
         }
 
 
