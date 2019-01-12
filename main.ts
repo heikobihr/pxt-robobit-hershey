@@ -1,5 +1,9 @@
 namespace robobithershey {
 
+    // absolute position
+    let abs_x = 0;
+    let abs_y = 0;
+
     // current direction
     let direction = 0;
 
@@ -7,11 +11,13 @@ namespace robobithershey {
     let scale_x = 5;
     let scale_y = 5;
 
+    // a vertex
     class Vertex {
         public x: number;
         public y: number;
     }
 
+    // a decoded Hershey glyph
     class Glyph {
         // left position
         public left: number;
@@ -55,6 +61,7 @@ namespace robobithershey {
         '03MWWVWV'
     ];
 
+    // decode a Hershey glyph
     function decodeGlyph(glyphIndex: number) {
         control.assert(number >= 0);
         control.assert(number < glyphs.length);
@@ -91,76 +98,11 @@ namespace robobithershey {
         return glyph;
     }
 
-    //      ^ y
-    //      |  
-    //   Q4 | Q1
-    // -----+------> x   (x,y) = (0,0) = origin
-    //   Q3 | Q2
-    //      |
-    function plotTo(nx: number, ny: number) {
-        // translate relative coordinates nx, ny to an
-        // angle to turn and length of way to move
-        //
-        // (0,0) is origin of our coordinate system. Depending on
-        // nx's and ny's sign, build a right triangle in one of the
-        // four quadrants (Q1..Q4) of our coordinate system with
-        // a=ny and b=nx. To move robobit from (0,0) to (nx,ny),
-        // we need to turn it by alpha and move the length of c.
-        //
-        // robobit mal already look in a different direction than
-        // positive x axis (0 degree), so we have to subtract
-        // robobits current angle from alpha
-        //
-        //           ^ y
-        // Q4        |        Q1 
-        //      B    |    B 
-        //      |\   |   /|
-        //      | \  | c/ |a=ny   b=nx
-        //      |  \ | /  |
-        //      |   \|/)alpha
-        // -----C----A--b-C------> x   (x,y) = (0,0) = origin
-        //      |   /|\   |
-        //      |  / | \  |
-        //      | /  |  \ |
-        //      |/   |   \|
-        //      B    |    B
-        // Q3        |        Q2
-        //
-        //
-        // Trigonometry and pythagoras are only computed for Q1
-        // New direction is then computed from alpha.
-
-        let c = Math.sqrt((nx * nx) + (ny * ny));
-
-        // alpha = angle from positive x axis
-        let alpha = 90;
-        if (nx != 0) {
-            alpha = (Math.atan(Math.abs(ny) / Math.abs(nx) * 180) / Math.PI;
-        }
-
-
-        let newDirection = 0;
-
-        if (nx >= 0) {
-            if (ny >= 0) {
-                // target vertex in Q1
-                newDirection = alpha;
-            } else {
-                // target vertex in Q2
-                newDirection = 360 - alpha
-            }
-        } else {
-            if (ny >= 0) {
-                // target vertex in Q4
-                newDirection = 180 - alpha;
-            } else {
-                // target vertex in Q3
-                newDirection = 180 + alpha;
-            }
-        }
-
+    //% block
+    // turn robobit to a new direction (angle from positive x axis)
+    function turnToNewDirection(newDirection: number) {
         // compute angle to rotate
-        rot = newDirection - direction
+        let rot = newDirection - direction
 
         if (rot >= 360) {
             rot -= 360;
@@ -185,9 +127,86 @@ namespace robobithershey {
             // rotate clockwise
         }
 
-        // drive c
+        direction = newDirection;
+    }
 
-        return newDirection;
+    //% block
+    // move robobit number units in current direction
+    function moveForward(c: number) {
+        // move
+    }
+
+    //% block
+    // plot a line from current position as (0,0) to (dx,dy)
+    function plotTo(dx: number, dy: number) {
+        // translate relative coordinates nx, ny to an
+        // angle to turn and length of way to move
+        //
+        // (0,0) is origin of our coordinate system. Depending on
+        // dx's and dy's sign, build a right triangle in one of the
+        // four quadrants (Q1..Q4) of our coordinate system with
+        // a=dy and b=dx. To move robobit from (0,0) to (dx,dy),
+        // we need to turn it by alpha and move the length of c.
+        //
+        // robobit mal already look in a different direction than
+        // positive x axis (0 degree), so we have to subtract
+        // robobits current angle from alpha
+        //
+        //           ^ y
+        // Q4        |        Q1 
+        //      B    |    B 
+        //      |\   |   /|
+        //      | \  | c/ |a=dy   b=dx
+        //      |  \ | /  |
+        //      |   \|/)alpha
+        // -----C----A--b-C------> x
+        //      |   /|\   |
+        //      |  / | \  |
+        //      | /  |  \ |
+        //      |/   |   \|
+        //      B    |    B
+        // Q3        |        Q2
+        //
+        //
+        // Trigonometry and Pythagoras are only computed for Q1
+        // New direction is then computed from alpha.
+
+        let c = Math.sqrt((dx * dx) + (dy * dy));
+
+        // alpha = angle from positive x axis
+        let alpha = 90;
+        if (dx != 0) {
+            alpha = (Math.atan(Math.abs(dy) / Math.abs(dx) * 180) / Math.PI;
+        }
+
+
+        let newDirection = 0;
+
+        if (dx >= 0) {
+            if (dy >= 0) {
+                // target vertex in Q1
+                newDirection = alpha;
+            } else {
+                // target vertex in Q2
+                newDirection = 360 - alpha
+            }
+        } else {
+            if (dy >= 0) {
+                // target vertex in Q4
+                newDirection = 180 - alpha;
+            } else {
+                // target vertex in Q3
+                newDirection = 180 + alpha;
+            }
+        }
+
+        turnToNewDirection(newDirection);
+
+        // drive c
+        moveForward(c);
+
+        abs_x += dx;
+        abs_y += dy;
     }
 
     //% block
@@ -211,12 +230,12 @@ namespace robobithershey {
                 let nx: number = ((vertex.x - glyph.left) * scale_x) - x;
                 let ny: number = (vertex.y * scale_y) - y;
 
-                direction = plotTo(nx, ny);
+                plotTo(nx, ny);
                 x += nx;
                 y += ny;
             }
 
-            direction = plotTo(((glyph.right - glyph.left) * scale_x) - x, 0);
+            plotTo(((glyph.right - glyph.left) * scale_x) - x, 0);
         }
     }
 
