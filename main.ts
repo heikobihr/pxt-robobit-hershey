@@ -11,6 +11,16 @@ namespace robobithershey {
     let scale_x = 5;
     let scale_y = 5;
 
+    // how many milliseconds to move per unit
+    let move_ms_per_unit = 100;
+    // move speed
+    let move_speed = 600;
+
+    // how many milliseconds to spin per degree
+    let spin_ms_per_degree = 3.33;
+    // spin speed
+    let spin_speed = 600;
+
     // a vertex
     class Vertex {
         public x: number;
@@ -98,7 +108,19 @@ namespace robobithershey {
         return glyph;
     }
 
-    // turn robobit to a new direction (angle from positive x axis)
+    //% block
+    function setParameters(aScale: number, aMoveMsPerUnit: number, aMoveSpeed: number, aSpinMsPerDegree: number, aSpinSpeed: number) {
+        scale_x = aScale;
+        scale_y = aScale;
+
+        move_ms_per_unit = aMoveMsPerUnit;
+        move_speed = aMoveSpeed;
+
+        spin_ms_per_degree = aSpinMsPerDegree;
+        spin_speed = aSpinSpeed;
+    }
+
+    // turn robobit to a new direction (angle from positive x axis, counter clockwise)
     //% block
     function turnToNewDirection(newDirection: number) {
         // compute angle to rotate
@@ -123,8 +145,10 @@ namespace robobithershey {
         // perform turn operation
         if (rot > 0) {
             // rotate counter clockwise
+            robobit.driveTurnMilliseconds(RBRobotDirection.Left, spin_speed, spin_ms_per_degree * rot);
         } else if (rot < 0) {
             // rotate clockwise
+            robobit.driveTurnMilliseconds(RBRobotDirection.Right, spin_speed, spin_ms_per_degree * Math.abs(rot));
         }
 
         direction = newDirection;
@@ -134,6 +158,17 @@ namespace robobithershey {
     //% block
     function moveForward(c: number) {
         // move
+        robobit.driveMilliseconds(move_speed, move_ms_per_unit);
+    }
+
+    //% block
+    function getPositionX() {
+        return abs_x;
+    }
+
+    //% block
+    function getPositionY() {
+        return abs_y;
     }
 
     // plot a line from current position as (0,0) to (dx,dy)
@@ -213,6 +248,9 @@ namespace robobithershey {
     //% block
     export function plotText(text: string) {
         for (let i = 0; i < text.length; i++) {
+            // show char to be plotted on LED matrix
+            basic.showString(text.charAt(i));
+
             let gi = text.charCodeAt(i);
 
             if (gi == 32 /* ascii blank */) {
@@ -238,6 +276,9 @@ namespace robobithershey {
 
             plotTo(((glyph.right - glyph.left) * scale_x) - x, 0);
         }
+
+        // clear LED matrix
+        basic.showString(" ");
     }
 
 }
