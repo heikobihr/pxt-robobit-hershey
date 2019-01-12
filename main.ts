@@ -98,8 +98,8 @@ namespace robobithershey {
         return glyph;
     }
 
-    //% block
     // turn robobit to a new direction (angle from positive x axis)
+    //% block
     function turnToNewDirection(newDirection: number) {
         // compute angle to rotate
         let rot = newDirection - direction
@@ -130,14 +130,14 @@ namespace robobithershey {
         direction = newDirection;
     }
 
-    //% block
     // move robobit number units in current direction
+    //% block
     function moveForward(c: number) {
         // move
     }
 
-    //% block
     // plot a line from current position as (0,0) to (dx,dy)
+    //% block
     function plotTo(dx: number, dy: number) {
         // translate relative coordinates nx, ny to an
         // angle to turn and length of way to move
@@ -209,6 +209,7 @@ namespace robobithershey {
         abs_y += dy;
     }
 
+    // plot a text using Hershey font
     //% block
     export function plotText(text: string) {
         for (let i = 0; i < text.length; i++) {
