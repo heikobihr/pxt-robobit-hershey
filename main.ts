@@ -63,8 +63,8 @@ namespace robobithershey {
 
     // decode a Hershey glyph
     function decodeGlyph(glyphIndex: number) {
-        control.assert(number >= 0);
-        control.assert(number < glyphs.length);
+        control.assert(glyphIndex >= 0);
+        control.assert(glyphIndex < glyphs.length);
 
         let glyphCode: string = glyphs[glyphIndex];
 
@@ -76,7 +76,7 @@ namespace robobithershey {
         glyph.left = glyphCode.charCodeAt(3) - 82;
         glyph.right = glyphCode.charCodeAt(4) - 82;
 
-        glyph.vertices = new Array<Vertex>;
+        glyph.vertices = [];
 
         // copy all remaining vertices to array
         for (let i = 1; i < numVertices; i++) {
@@ -176,7 +176,7 @@ namespace robobithershey {
         // alpha = angle from positive x axis
         let alpha = 90;
         if (dx != 0) {
-            alpha = (Math.atan(Math.abs(dy) / Math.abs(dx) * 180) / Math.PI;
+            alpha = (Math.atan(Math.abs(dy) / Math.abs(dx) * 180)) / Math.PI;
         }
 
 
@@ -213,7 +213,7 @@ namespace robobithershey {
     //% block
     export function plotText(text: string) {
         for (let i = 0; i < text.length; i++) {
-            let gi = char.charCodeAt(i);
+            let gi = text.charCodeAt(i);
 
             if (gi == 32 /* ascii blank */) {
                 // glyph index of "blank"
